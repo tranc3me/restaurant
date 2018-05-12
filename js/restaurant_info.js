@@ -1,6 +1,22 @@
 let restaurant;
 var map;
 
+
+//ADDING TAB INDEXES//
+
+window.onload= function(){
+const restoran=document.getElementById('restaurant-container').querySelectorAll('h1,tr,p')
+for (rest of restoran){
+    rest.setAttribute('tabindex',"0")
+}
+
+const review=document.getElementById('reviews-container').querySelectorAll('h2,li')
+    for(rev of review){
+        rev.setAttribute('tabindex',"0")
+    }
+}
+
+
 /**
  * Initialize Google map, called from HTML.
  */
@@ -144,6 +160,7 @@ fillBreadcrumb = (restaurant=self.restaurant) => {
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);
+
 }
 
 /**

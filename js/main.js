@@ -4,12 +4,70 @@ let restaurants,
 var map
 var markers = []
 
+//---registering service worker---//
+//from: https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers//
+
+ if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js')
+  .then(function(reg) {
+    // registration worked
+    console.log(' Service Worker Registration succeeded.');
+  }).catch(function(error) {
+    // registration failed
+    console.log('Registration failed with ' + error);
+  });
+}
+
+/*** focusing and shit**/
+
+//dirty way of solving it//
+//can you address this in the comments and tell me how would you do this?
+//without using the Interval
+//if just listen for the "titlesloaded" it fires sooner than classes what I need
+// are placed in the DOM
+
+
+window.onload= function(){
+
+    google.maps.event.addListener(map, 'tilesloaded', skiptab);
+
+    function skiptab() {
+
+        var checkExist = setInterval(function() {
+            var map=document.getElementById('map-container').querySelectorAll('*')
+            if (document.getElementsByClassName('.gmoprint')) {
+                indextab(map);
+                clearInterval(checkExist);
+            }
+        }, 200)
+
+        function indextab(map){
+            for(child of map){
+                child.setAttribute('tabindex','-1');
+            }
+        }
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
+
+
 });
 
 /**
@@ -81,6 +139,7 @@ window.initMap = () => {
     scrollwheel: false
   });
   updateRestaurants();
+
 }
 
 /**
@@ -171,6 +230,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     // Add marker to the map
     const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
     google.maps.event.addListener(marker, 'click', () => {
+
       window.location.href = marker.url
     });
     self.markers.push(marker);
